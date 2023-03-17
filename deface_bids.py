@@ -99,7 +99,7 @@ def sftp_upload_file(sftp, file_path, remote_dir, dry_run):
 def upload_osg(project_dir, deface_list, remote_dir, dry_run, num_workers=4):
     USERNAME = "lwang"
     HOST = "login05.osgconnect.net"
-    SSH_KEY_PATH = "/home/lwang/.ssh/id_rsa"
+    SSH_KEY_PATH = "/home/wangl15@acct.upmchs.net/.ssh/id_osg"
 
     defaced_list = [
         (
@@ -113,7 +113,7 @@ def upload_osg(project_dir, deface_list, remote_dir, dry_run, num_workers=4):
 
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(HOST, username=USERNAME, key_filename=SSH_KEY_PATH)
+    ssh.connect(HOST, username=USERNAME, key_filename=SSH_KEY_PATH,passphrase="osg")
 
     sftp = ssh.open_sftp()
     try:
