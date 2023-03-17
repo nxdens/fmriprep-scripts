@@ -26,8 +26,9 @@ build-job:       # This job runs in the build stage, which runs first.
     - echo "defacing and uploading"
     - python deface_bids.py -dir ./bids_test/camcan_bids_redo/ -remote_dir /home/lwang/camcan/defaced/ -dry_run > deface.txt
   artifacts:
-    - make_bids.txt
-    - fix_errors.txt
-    - deface.txt
+    paths:
+      - make_bids.txt
+      - fix_errors.txt
+      - deface.txt
 
 
