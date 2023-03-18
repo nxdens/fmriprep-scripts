@@ -113,7 +113,7 @@ def upload_osg(project_dir, deface_list, remote_dir, dry_run, num_workers=4):
 
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(HOST, username=USERNAME, key_filename=SSH_KEY_PATH,passphrase="osg")
+    ssh.connect(HOST, username=USERNAME, key_filename=SSH_KEY_PATH)
 
     sftp = ssh.open_sftp()
     try:
