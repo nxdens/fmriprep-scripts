@@ -39,18 +39,24 @@ def upload_osg(project_dir, remote_dir, dry_run):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(HOST, username=USERNAME, key_filename=SSH_KEY_PATH)
+    sftp = ssh.open_sftp()
 
     try:
         sftp.put("./fmriprep_scripts.sh", "/home/lwang/fmriprep_scripts.sh")
     except:
-        pass
+        print("File already exists")
 
-    sftp = ssh.open_sftp()
+    try:
+        sftp.put("./camcan_fmriprep.submit", "/home/lwang/camcan_fmriprep.submit")
+    except:
+        print("File already exists")
+
     try_make_remote_dir(sftp, remote_dir, dry_run)
     try_make_remote_dir(sftp, os.path.join(remote_dir, "derivatives"), dry_run)
     try_make_remote_dir(
         sftp, os.path.join(remote_dir, "derivatives", "fmriprep"), dry_run
     )
+    subject_list = []
 
     for root, dirs, files in os.walk(project_dir):
         for name in dirs:
@@ -58,7 +64,9 @@ def upload_osg(project_dir, remote_dir, dry_run):
                 remote_file_path = os.path.join(
                     remote_dir, "derivatives", "fmriprep", name
                 )
-                try_make_remote_dir(sftp, remote_file_path, dry_run)
+                subject_list.append(name)
+                print(name)
+                # try_make_remote_dir(sftp, remote_file_path, dry_run)
 
     sftp.close()
     ssh.close()

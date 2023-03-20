@@ -1,10 +1,15 @@
 #!/bin/bash
 
+printf "Start time: "; /bin/date
+printf "Job is running on node: "; /bin/hostname
+printf "Job running as user: "; /usr/bin/id
+printf "Job is running in directory: "; /bin/pwd
+printf "Job has proccess ID: "; $1
+
 # this script is for run fmriprep docker to preprocess nemo data.
-OUTPUT_DIR='/public/lwang/camcan/derivatives/fmriprep'
+OUTPUT_DIR='/out'
 BIDS_DIR='/public/lwang/camcan'
-#filename='/home/jinh2@acct.upmchs.net/hj_data/Nemo/Nemo_test/nemo_subject_list_test_7T.txt'
-fs_license='/home/lwang/license.txt'
+fs_license='/public/lwang/license.txt'
 subject='sub-CC110033'
 
 # ----- run fmripre docker ----------------
@@ -33,13 +38,19 @@ subject='sub-CC110033'
 #     n=$((n+1))
 # done < $filename
 
+ls /public/lwang
 
-docker run --cpus "8" -m 16g --rm -i \
--v "${BIDS_DIR}:/data:ro" \
--v "${OUTPUT_DIR}:/out" \
--v "${fs_license}:/opt/freesurfer/license.txt" \
-nipreps/fmriprep:22.0.0 \
-/data /out/out participant \
+#copy freesurfer license
+cp $fs_license /opt/freesurfer/license.txt
+
+mkdir $OUTPUT_DIR
+
+fmriprep \
+${BIDS_DIR} ${OUTPUT_DIR} participant \
 --participant_label ${subject} \
 --fs-no-reconall \
---nprocs 8 --omp-nthreads 4 \
+--nprocs 8
+
+ls ${OUTPUT_DIR}
+
+stashcp ${OUTPUT_DIR} /public/lwang/camcan/derivatives/fmriprep/${subject}
